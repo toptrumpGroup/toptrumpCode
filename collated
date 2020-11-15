@@ -2,11 +2,17 @@ import csv
 import requests
 import random
 
-
 wins = list()
 i = 0
 
 results = []
+player_name = input("What is your player name?")
+print('Hi', player_name, 'Welcome to the pokemon top trump game!')
+
+with open("pokemon_records.csv") as file:
+    reader = csv.reader(file)
+    for row in reader:
+        results.append(row)
 
 
 def single_round():
@@ -23,46 +29,29 @@ def single_round():
                 'height': pokemon['height'],
                 'weight': pokemon['weight'],
             }
-
-        player_name = input("What is your player name?")
-        print('Hi', player_name, 'Welcome to the pokemon top trump game!')
-
-        player_one_1_r1 = get_pokemon()
-        player_one_2_r1 = get_pokemon()
-        player_one_3_r1 = get_pokemon()
-
-        player_two_1_r1 = get_pokemon()
-        player_two_2_r1 = get_pokemon()
-        player_two_3_r1 = get_pokemon()
-
-        print('\nPokemon 1:')
-        print('name: {}'.format(player_one_1_r1['name']))
-        print('ID: {}'.format(player_one_1_r1['id']))
-        print('height: {}'.format(player_one_1_r1['height']))
-        print('weight: {}'.format(player_one_1_r1['weight']))
-
-        print('\nPokemon 2')
-        print('name: {}'.format(player_one_2_r1['name']))
-        print('ID: {}'.format(player_one_2_r1['id']))
-        print('height: {}'.format(player_one_2_r1['height']))
-        print('weight: {}'.format(player_one_2_r1['weight']))
-
-        print('\nPokemon 3')
-        print('name: {}'.format(player_one_3_r1['name']))
-        print('ID: {}'.format(player_one_3_r1['id']))
-        print('height: {}'.format(player_one_3_r1['height']))
-        print('weight: {}'.format(player_one_3_r1['weight']))
+# Puts the player and computers values in array(list)
+        player_one = []
+        player_two = []
+        i = 0
+# loops through the specified number of times adding a pokemon character to the arrays above
+        while i < 3:
+            player_one.append(get_pokemon())
+            player_two.append(get_pokemon())
+            i += 1
+        z = 0
+# For loop prints the pokemon character stats
+        for x in player_one:
+            z += 1
+            print('\nPokemon ' + str(z) + ':')
+            print('name:' + x['name'])
+            print('id:' + str(x['id']))
+            print('height:' + str(x['height']))
+            print('weight:' + str(x['weight']))
 
         print('\nPlease wait, stats loading...')
-
-        stat_c_id_1 = player_two_1_r1['id']
-        stat_c_id_2 = player_two_2_r1['id']
-        stat_c_id_3 = player_two_3_r1['id']
-
         arrayids = []
         arrayheights = []
         arrayweights = []
-
         id_numbers = range(1, 151)
         for id_number in id_numbers:
             response_id_url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(id_number)
@@ -75,113 +64,56 @@ def single_round():
             arrayheights.append(total_height)
             arrayweights.append(total_weight)
 
-        stat_u_id_1 = player_one_1_r1['id']
-        stat_u_id_2 = player_one_2_r1['id']
-        stat_u_id_3 = player_one_3_r1['id']
-
-        if stat_u_id_1 > stat_u_id_2 and stat_u_id_1 > stat_u_id_3:
-            stat_u_id = stat_u_id_1
-            print('\n{} has the highest ID stat.'.format(player_one_1_r1['name']))
-        elif stat_u_id_2 > stat_u_id_1 and stat_u_id_2 > stat_u_id_3:
-            stat_u_id = stat_u_id_2
-            print('\n{} has the highest ID stat.'.format(player_one_2_r1['name']))
-        elif stat_u_id_3 > stat_u_id_1 and stat_u_id_3 > stat_u_id_2:
-            stat_u_id = stat_u_id_3
-            print('\n{} has the highest ID stat.'.format(player_one_3_r1['name']))
-        elif stat_u_id_1 == stat_u_id_2 and stat_u_id_1 > stat_u_id_3:
-            stat_u_id = stat_u_id_1
-            print('\n{} and'.format(player_one_1_r1['name']),
-                  print('{} have the highest ID stats.'.format(player_one_2_r1['name'])))
-        elif stat_u_id_1 == stat_u_id_3 and stat_u_id_1 > stat_u_id_2:
-            stat_u_id = stat_u_id_1
-            print('\n{} and'.format(player_one_1_r1['name']),
-                  print('{} have the highest ID stats.'.format(player_one_3_r1['name'])))
-        elif stat_u_id_2 == stat_u_id_3 and stat_u_id_2 > stat_u_id_1:
-            stat_u_id = stat_u_id_2
-            print('\n{} and'.format(player_one_2_r1['name']),
-                  print('{} have the highest ID stats.'.format(player_one_3_r1['name'])))
-        else:
-            print('\nAll Pokemon have equal ID stats.')
-            stat_u_id = stat_u_id_1
+        character_id = []
+        character_height = []
+        character_weight = []
+        for character in player_one:
+            character_id.append(character['id'])
+            character_height.append(character['height'])
+            character_weight.append(character['weight'])
+        character_id_max = max(character_id)
+        character_height_max = max(character_height)
+        character_weight_max = max(character_weight)
+        for highest in player_one:
+            if highest['id'] == character_id_max:
+                print('\n{} has the highest ID stat.'.format(highest['name']))
+                stat_u_id = highest['id']
+            if highest['height'] == character_height_max:
+                print('\n{} has the highest Height stat.'.format(highest['name']))
+                stat_u_h = highest['height']
+            if highest['weight'] == character_weight_max:
+                print('\n{} has the highest Weight stat.'.format(highest['name']))
+                stat_u_w = highest['weight']
 
         i = 0
         for arrayid in arrayids:
             if stat_u_id > arrayid:
                 i = i + 1
         chance_of_winning_i = (i / 150) * 100
-        print('Percentage chance of winning with highest ID value: ', chance_of_winning_i)
-
-        stat_u_h_1 = player_one_1_r1['height']
-        stat_u_h_2 = player_one_2_r1['height']
-        stat_u_h_3 = player_one_3_r1['height']
-
-        if stat_u_h_1 > stat_u_h_2 and stat_u_h_1 > stat_u_h_3:
-            stat_u_h = stat_u_h_1
-            print('\n{} has the highest height stat.'.format(player_one_1_r1['name']))
-        elif stat_u_h_2 > stat_u_h_1 and stat_u_h_2 > stat_u_h_3:
-            stat_u_h = stat_u_h_2
-            print('\n{} has the highest height stat.'.format(player_one_2_r1['name']))
-        elif stat_u_h_3 > stat_u_h_1 and stat_u_h_3 > stat_u_h_2:
-            stat_u_h = stat_u_h_3
-            print('\n{} has the highest height stat.'.format(player_one_3_r1['name']))
-        elif stat_u_h_1 == stat_u_h_2 and stat_u_h_1 > stat_u_h_3:
-            stat_u_h = stat_u_h_1
-            print('\n{} and'.format(player_one_1_r1['name']),
-                  print('{} have the highest height stats.'.format(player_one_2_r1['name'])))
-        elif stat_u_h_1 == stat_u_h_3 and stat_u_h_1 > stat_u_h_2:
-            stat_u_h = stat_u_h_1
-            print('\n{} and'.format(player_one_1_r1['name']),
-                  print('{} have the highest height stats.'.format(player_one_3_r1['name'])))
-        elif stat_u_h_2 == stat_u_h_3 and stat_u_h_2 > stat_u_h_1:
-            stat_u_h = stat_u_h_2
-            print('\n{} and'.format(player_one_2_r1['name']),
-                  print('\n{} have the highest height stats.'.format(player_one_3_r1['name'])))
-        else:
-            print('\nAll Pokemon have equal height stats.')
-            stat_u_h = stat_u_h_1
+        print('Percentage chance of winning with highest ID value: ', round(chance_of_winning_i, 2))
 
         j = 0
         for arrayheight in arrayheights:
             if stat_u_h > arrayheight:
                 j = j + 1
         chance_of_winning_j = (j / 150) * 100
-        print('Percentage chance of winning with highest height value: ', chance_of_winning_j)
-
-        stat_u_w_1 = player_one_1_r1['weight']
-        stat_u_w_2 = player_one_2_r1['weight']
-        stat_u_w_3 = player_one_3_r1['weight']
-
-        if stat_u_w_1 > stat_u_w_2 and stat_u_w_1 > stat_u_w_3:
-            stat_u_w = stat_u_w_1
-            print('\n{} has the highest weight stat.'.format(player_one_1_r1['name']))
-        elif stat_u_w_2 > stat_u_w_1 and stat_u_w_2 > stat_u_w_3:
-            stat_u_w = stat_u_w_2
-            print('\n{} has the highest weight stat.'.format(player_one_2_r1['name']))
-        elif stat_u_w_3 > stat_u_w_1 and stat_u_w_3 > stat_u_w_2:
-            stat_u_w = stat_u_w_3
-            print('\n{} has the highest weight stat.'.format(player_one_3_r1['name']))
-        elif stat_u_w_1 == stat_u_w_2 and stat_u_w_1 > stat_u_w_3:
-            stat_u_w = stat_u_w_1
-            print('\n{} and'.format(player_one_1_r1['name']),
-                  print('{} have the highest weight stats.'.format(player_one_2_r1['name'])))
-        elif stat_u_w_1 == stat_u_w_3 and stat_u_w_1 > stat_u_w_2:
-            stat_u_w = stat_u_w_1
-            print('\n{} and'.format(player_one_1_r1['name']),
-                  print('{} have the highest weight stats.'.format(player_one_3_r1['name'])))
-        elif stat_u_w_2 == stat_u_w_3 and stat_u_w_2 > stat_u_w_1:
-            stat_u_w = stat_u_w_2
-            print('\n{} and'.format(player_one_2_r1['name']),
-                  print('{} have the highest weight stats.'.format(player_one_3_r1['name'])))
-        else:
-            print('\nAll Pokemon have equal weight stats.')
-            stat_u_w = stat_u_w_1
+        print('Percentage chance of winning with highest height value: ', round(chance_of_winning_j, 2))
 
         k = 0
         for arrayweight in arrayweights:
             if stat_u_w > arrayweight:
                 k = k + 1
         chance_of_winning_k = (k / 150) * 100
-        print('Percentage chance of winning with highest weight value: ', chance_of_winning_k)
+        print('Percentage chance of winning with highest weight value: ', round(chance_of_winning_k, 2))
+
+        #chance_of_winning_list = [chance_of_winning_i, chance_of_winning_j, chance_of_winning_k]
+        #chance_of_winning_max = max(chance_of_winning_list)
+        #if chance_of_winning_max == chance_of_winning_list[0]:
+        #    print('\nYou are most likely to win using the highest ID value!')
+        #elif chance_of_winning_max == chance_of_winning_list[1]:
+        #    print('\nYou are most likely to win using the highest height value!')
+        #elif chance_of_winning_max == chance_of_winning_list[2]:
+        #    print('\nYou are most likely to win using the highest weight value!')
 
         if chance_of_winning_i > chance_of_winning_j and chance_of_winning_i > chance_of_winning_k:
             print('\nYou are most likely to win using the highest ID value!')
@@ -198,71 +130,36 @@ def single_round():
         else:
             print('\nYou are equally likely to win with any value!')
 
-        if stat_c_id_1 > stat_c_id_2 and stat_c_id_1 > stat_c_id_3:
-            stat_c_id = stat_c_id_1
-        elif stat_c_id_2 > stat_c_id_1 and stat_c_id_2 > stat_c_id_3:
-            stat_c_id = stat_c_id_2
-        elif stat_c_id_3 > stat_c_id_2 and stat_c_id_3 > stat_c_id_1:
-            stat_c_id = stat_c_id_3
-        elif stat_c_id_1 == stat_c_id_2 and stat_c_id_1 > stat_c_id_3:
-            stat_c_id = stat_c_id_1
-        elif stat_c_id_1 == stat_c_id_3 and stat_c_id_1 > stat_c_id_2:
-            stat_c_id = stat_c_id_1
-        elif stat_c_id_3 == stat_c_id_2 and stat_c_id_3 > stat_c_id_1:
-            stat_c_id = stat_c_id_2
-        else:
-            stat_c_id = stat_c_id_1
-
-        stat_c_h_1 = player_two_1_r1['height']
-        stat_c_h_2 = player_two_2_r1['height']
-        stat_c_h_3 = player_two_3_r1['height']
-
-        if stat_c_h_1 > stat_c_h_2 and stat_c_h_1 > stat_c_h_3:
-            stat_c_h = stat_c_h_1
-        elif stat_c_h_2 > stat_c_h_1 and stat_c_h_2 > stat_c_h_3:
-            stat_c_h = stat_c_h_2
-        elif stat_c_h_3 > stat_c_h_2 and stat_c_h_3 > stat_c_h_1:
-            stat_c_h = stat_c_h_3
-        elif stat_c_h_1 == stat_c_h_2 and stat_c_h_1 > stat_c_h_3:
-            stat_c_h = stat_c_h_1
-        elif stat_c_h_1 == stat_c_h_3 and stat_c_h_1 > stat_c_h_2:
-            stat_c_h = stat_c_h_1
-        elif stat_c_h_3 == stat_c_h_2 and stat_c_h_3 > stat_c_h_1:
-            stat_c_h = stat_c_h_2
-        else:
-            stat_c_h = stat_c_h_1
-
-        stat_c_w_1 = player_two_1_r1['weight']
-        stat_c_w_2 = player_two_2_r1['weight']
-        stat_c_w_3 = player_two_3_r1['weight']
-
-        if stat_c_w_1 > stat_c_w_2 and stat_c_w_1 > stat_c_w_3:
-            stat_c_w = stat_c_w_1
-        elif stat_c_w_2 > stat_c_w_1 and stat_c_w_2 > stat_c_w_3:
-            stat_c_w = stat_c_w_2
-        elif stat_c_w_3 > stat_c_w_2 and stat_c_w_3 > stat_c_w_1:
-            stat_c_w = stat_c_w_3
-        elif stat_c_w_1 == stat_c_w_2 and stat_c_w_1 > stat_c_w_3:
-            stat_c_w = stat_c_w_1
-        elif stat_c_w_1 == stat_c_w_3 and stat_c_w_1 > stat_c_w_2:
-            stat_c_w = stat_c_w_1
-        elif stat_c_w_3 == stat_c_w_2 and stat_c_w_3 > stat_c_w_1:
-            stat_c_w = stat_c_w_2
-        else:
-            stat_c_w = stat_c_w_1
+        comp_id = []
+        comp_height = []
+        comp_weight = []
+        for comp in player_two:
+            comp_id.append(comp['id'])
+            comp_height.append(comp['height'])
+            comp_weight.append(comp['weight'])
+        comp_id_max = max(comp_id)
+        comp_height_max = max(comp_height)
+        comp_weight_max = max(comp_weight)
+        for highest_comp in player_two:
+            if highest_comp['id'] == comp_id_max:
+                stat_c_id = highest_comp['id']
+            if highest_comp['height'] == comp_height_max:
+                stat_c_h = highest_comp['height']
+            if highest_comp['weight'] == comp_weight_max:
+                stat_c_w = highest_comp['weight']
 
         pokemon_choice_input = input('\nWhich Pokemon do you want to choose - 1, 2, or 3? ')
 
         stat_choice_input = input('\nWhich stat do you want to use - ID, height, or weight? ')
 
         if pokemon_choice_input == '1':
-            pokemon_choice = player_one_1_r1
+            pokemon_choice = player_one[0]
         elif pokemon_choice_input == '2':
-            pokemon_choice = player_one_2_r1
+            pokemon_choice = player_one[1]
         elif pokemon_choice_input == '3':
-            pokemon_choice = player_one_3_r1
+            pokemon_choice = player_one[2]
         else:
-            pokemon_choice = random.choice([player_one_1_r1, player_one_2_r1, player_one_3_r1])
+            pokemon_choice = random.choice([player_one[0], player_one[1], player_one[2]])
 
         def find_stat(stat_choice_input):
             if stat_choice_input == 'id':
@@ -271,17 +168,15 @@ def single_round():
                 if stat_u > stat_c:
                     print('\nYou win!')
                     print('Your value:', stat_u)
-                    print('Computer value:', stat_c)
+                    print('Enemies value was:', stat_c)
                     wins.append('Win')
-
                 elif stat_u == stat_c:
                     print('\nDraw!')
                     wins.append('Draw')
-
                 else:
                     print('\nYou lose!')
                     print('Your value:', stat_u)
-                    print('Computer value:', stat_c)
+                    print('Enemies value was:', stat_c)
                     wins.append('Lose')
 
             elif stat_choice_input == 'height':
@@ -290,36 +185,31 @@ def single_round():
                 if stat_u > stat_c:
                     print('\nYou win!')
                     print('Your value:', stat_u)
-                    print('Computer value:', stat_c)
+                    print('Enemies value was:', stat_c)
                     wins.append('Win')
-
                 elif stat_u == stat_c:
                     print('\nDraw!')
                     wins.append('Draw')
-
                 else:
                     print('\nYou lose!')
                     print('Your value:', stat_u)
-                    print('Computer value:', stat_c)
+                    print('Enemies value was:', stat_c)
                     wins.append('Lose')
-
             elif stat_choice_input == 'weight':
                 stat_u = pokemon_choice['weight']
                 stat_c = stat_c_w
                 if stat_u > stat_c:
                     print('\nYou win!')
                     print('Your value:', stat_u)
-                    print('Computer value:', stat_c)
+                    print('Enemies value was:', stat_c)
                     wins.append('Win')
-
                 elif stat_u == stat_c:
                     print('\nDraw!')
                     wins.append('Draw')
-
                 else:
                     print('\nYou lose!')
                     print('Your value:', stat_u)
-                    print('Computer value:', stat_c)
+                    print('Enemies value was:', stat_c)
                     wins.append('Lose')
 
             else:
@@ -334,9 +224,7 @@ def single_round():
                         pokemon_choice['weight'],
                         pokemon_choice['height'],
                         wins])
-
     one_round()
-
     play_again_choice = input('\nWould you like to add another round? y or n? ')
 
     def play_again(play_again_choice):
@@ -347,16 +235,11 @@ def single_round():
         else:
             replace_play_again = input('\nIncorrect value entered, please choose y or n ')
             play_again(replace_play_again)
-
     play_again(play_again_choice)
 
 
 single_round()
 
-with open("pokemon_records.csv") as file:
-    reader = csv.reader(file)
-    for row in reader:
-        results.append(row)
 
 with open('pokemon_records.csv', 'w') as records:
     pokemon_scores = csv.writer(records, delimiter=',')
@@ -365,7 +248,8 @@ with open('pokemon_records.csv', 'w') as records:
             pokemon_scores.writerow(result)
     else:
         pokemon_scores.writerow(['Player name', 'ID', 'Pokemon name', 'Weight', 'Height', 'Result'])
-
+        for result in results:
+            pokemon_scores.writerow(result)
 for win in wins:
     if win == 'Win':
         i = i + 1
