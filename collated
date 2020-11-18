@@ -4,15 +4,18 @@ import random
 
 wins = list()
 i = 0
-
+# Array that stores the player scores for the csv file
 results = []
 player_name = input("What is your player name?")
 print('Hi', player_name, 'Welcome to the pokemon top trump game!')
 
+# This reads the csv file called pokemon records. Loops through each value in the results array/list
 with open("pokemon_records.csv") as file:
     reader = csv.reader(file)
     for row in reader:
         results.append(row)
+
+# Sends a json request to the pokemon api and generates a random pokemon between 1 and 151
 
 
 def single_round():
@@ -106,13 +109,15 @@ def single_round():
         chance_of_winning_k = (k / 150) * 100
         print('Percentage chance of winning with highest weight value: ', round(chance_of_winning_k, 2))
 
-        #chance_of_winning_list = [chance_of_winning_i, chance_of_winning_j, chance_of_winning_k]
-        #chance_of_winning_max = max(chance_of_winning_list)
-        #if chance_of_winning_max == chance_of_winning_list[0]:
+        # Another way of doing probability but does not account for two values inclusive 
+
+        # chance_of_winning_list = [chance_of_winning_i, chance_of_winning_j, chance_of_winning_k]
+        # chance_of_winning_max = max(chance_of_winning_list)
+        # if chance_of_winning_max == chance_of_winning_list[0]:
         #    print('\nYou are most likely to win using the highest ID value!')
-        #elif chance_of_winning_max == chance_of_winning_list[1]:
+        # elif chance_of_winning_max == chance_of_winning_list[1]:
         #    print('\nYou are most likely to win using the highest height value!')
-        #elif chance_of_winning_max == chance_of_winning_list[2]:
+        # elif chance_of_winning_max == chance_of_winning_list[2]:
         #    print('\nYou are most likely to win using the highest weight value!')
 
         if chance_of_winning_i > chance_of_winning_j and chance_of_winning_i > chance_of_winning_k:
@@ -159,8 +164,9 @@ def single_round():
         elif pokemon_choice_input == '3':
             pokemon_choice = player_one[2]
         else:
-            pokemon_choice = random.choice([player_one[0], player_one[1], player_one[2]])
-
+            pokemon_choice = random.choice([player_one[0], player_one[1], player_one[2]])  
+            
+# function checks the players value against the computers value e.g. id, height, weight 
         def find_stat(stat_choice_input):
             if stat_choice_input == 'id':
                 stat_u = pokemon_choice['id']
@@ -240,7 +246,7 @@ def single_round():
 
 single_round()
 
-
+# This writes to the csv file, from the records array which displays the results from the current pokemon
 with open('pokemon_records.csv', 'w') as records:
     pokemon_scores = csv.writer(records, delimiter=',')
     if len(results) > 0:
