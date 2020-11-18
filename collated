@@ -51,10 +51,14 @@ def single_round():
             print('height:' + str(x['height']))
             print('weight:' + str(x['weight']))
 
+# As it will take a while to calculate the probabilities, I put in a message to let us know that it's still running!
         print('\nPlease wait, stats loading...')
+        
+# Create 3 arrays, each corresponding to the stats that will be used.       
         arrayids = []
         arrayheights = []
         arrayweights = []
+# Goes through Pokemon 1 through 151, finding their stats and adding them to the arrays above. This gives us the stats for each Pokemon included in the game.        
         id_numbers = range(1, 151)
         for id_number in id_numbers:
             response_id_url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(id_number)
@@ -66,7 +70,8 @@ def single_round():
             arrayids.append(total_id)
             arrayheights.append(total_height)
             arrayweights.append(total_weight)
-
+            
+# Creates arrays for the stats of the player's Pokemon, calculates the max value for each stat, and prints it.
         character_id = []
         character_height = []
         character_weight = []
@@ -88,6 +93,8 @@ def single_round():
                 print('\n{} has the highest Weight stat.'.format(highest['name']))
                 stat_u_w = highest['weight']
 
+# Calculates the percentage chance of winning by taking the highest value for each stat and comparing with the arrays created from all Pokemon
+# and finding how many values in that array are lower than that stat. 
         i = 0
         for arrayid in arrayids:
             if stat_u_id > arrayid:
@@ -120,6 +127,7 @@ def single_round():
         # elif chance_of_winning_max == chance_of_winning_list[2]:
         #    print('\nYou are most likely to win using the highest weight value!')
 
+# Uses the percentage chances of winning to calculate which stat one is most likely to win using, thn prints this. 
         if chance_of_winning_i > chance_of_winning_j and chance_of_winning_i > chance_of_winning_k:
             print('\nYou are most likely to win using the highest ID value!')
         elif chance_of_winning_j > chance_of_winning_i and chance_of_winning_j > chance_of_winning_k:
@@ -135,6 +143,7 @@ def single_round():
         else:
             print('\nYou are equally likely to win with any value!')
 
+# The highest stat values are calculated for the computer from 3 random Pokemon, to to make it a more challenging game. 
         comp_id = []
         comp_height = []
         comp_weight = []
@@ -153,6 +162,7 @@ def single_round():
             if highest_comp['weight'] == comp_weight_max:
                 stat_c_w = highest_comp['weight']
 
+# The user is asked to make a choice of Pokemon and stat, which may or may not be the highest. 
         pokemon_choice_input = input('\nWhich Pokemon do you want to choose - 1, 2, or 3? ')
 
         stat_choice_input = input('\nWhich stat do you want to use - ID, height, or weight? ')
@@ -166,7 +176,8 @@ def single_round():
         else:
             pokemon_choice = random.choice([player_one[0], player_one[1], player_one[2]])  
             
-# function checks the players value against the computers value e.g. id, height, weight 
+# function checks the players value against the computers value e.g. id, height, weight. 
+# If the user is higher than the computer they win, equal they draw, and less they lose. These results are recorded in the list 'wins'.
         def find_stat(stat_choice_input):
             if stat_choice_input == 'id':
                 stat_u = pokemon_choice['id']
@@ -233,6 +244,7 @@ def single_round():
     one_round()
     play_again_choice = input('\nWould you like to add another round? y or n? ')
 
+# Asks the user if they want to play another round. If yes, this triggers the function to begin again. Else, it ends the game. 
     def play_again(play_again_choice):
         if play_again_choice == 'y':
             single_round()
@@ -256,6 +268,8 @@ with open('pokemon_records.csv', 'w') as records:
         pokemon_scores.writerow(['Player name', 'ID', 'Pokemon name', 'Weight', 'Height', 'Result'])
         for result in results:
             pokemon_scores.writerow(result)
+
+# Based on the number of wins, draws, and losses, this calculates if you won or lost overall over multiple rounds.
 for win in wins:
     if win == 'Win':
         i = i + 1
